@@ -1,0 +1,18 @@
+ISTART = 0
+ICHARG = 2
+
+PREC = Accurate
+IBRION = -1
+EDIFF = 1.0e-08
+NSW = 0
+NELM = 100
+ENCUT = 520
+
+ISMEAR = 0
+SIGMA = 0.01
+
+ISYM = 0
+LWAVE = .FALSE.
+LCHARG = .FALSE.
+
+ALGO = F

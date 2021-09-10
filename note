@@ -1,0 +1,27 @@
+# pre-required files: diel_const.sh diel-const-post.py diel-const-preparation.py INCAR-step2 INCAR-step3 KPOINTS *.cif poscar_from_cif.py POTCAR preparation.py
+
+
+# 1. find a .cif from a vasp structure optimization|materialsproject.org
+# 2. run: python poscar_from_cif.py
+# 3. back up your unitcell doing: cp POSCAR POSCAR-unitcell
+# 4. activate phonopy by conda activate <your phonopy environment>
+# 5. make supercell: phono3py -d --dim_fc2="2 3 2" --dim='2 2 2<put what you want depends on your computer or your system>' -c POSCAR <--cutoff-pair=1 if too much POSCAR-00* generated>
+# 6. run preparation.py: python preparation.py
+# 7. run vasp in sub-folders(dis-*, dis_fc2-*): (optional using no_scheduler.sh if you don't have slurm and run it on 1 computer) bash no_scheduler.sh
+# 8. generate FORCES_FC2 and FORCES_FC3 by runing: phono3py --cf2 dis_fc2-{000<1st>..000<end>}/vasprun.xml
+# phono3py --cf3 dis-{000<1st>..000<end>}/vasprun.xml
+# 9. generate fc2.hdf5 fc3.hdf5 by running: phono3py --dim-fc2='2 3 2' --dim='2 2 2' -c POSCAR-unitcell --sym-fc
+# 10. generate irreps.yaml: phono3py --dim='2 3 2' --readfc --hdf5 --fc-symmetry --irreps='0 0 0' -c POSCAR-unitcell
+# 11. generate kappa-m484848-g0.hdf5: phono3py --dim-fc2='2 3 2' --dim='2 2 2' --fc2 --fc3 -v --thm --mesh='48 48 48' --write-gamma --gp=0 <-c POSCAR-unitcell if see ERROR like: fc3.hdf5 dimension not consistent with supercell>
+
+
+
+# use github code: Phonopy-Spectroscopy
+# 12. generate displaced structures: phonopy-raman -d 
+# 13. run code diel-const-preparation.py: python diel-const-preparation.py
+# 14. run vasp in sub-folders (raman-*): bash diel-const.sh
+# 15. generate raman spectrum: phonopy-raman -p --ir-reps --linewidth-hdf5='kappa-m484848-g0.hdf5' --linewidth-temperature=300
+
+# frequent bugs
+# 1. in phono(3)py if see ERROR like: fc3.hdf5 dimension not consistent with supercell, add `-c POSCAR-unitcell` to specify
+# 2. when running python code, encounters ModuleNotFoundError, run/check `which python` you are using. Sometimes activating the Intel MPI running `. ./opt/intel/oneapi/setvars.sh` can switch the current python to the intel one.
