@@ -1,0 +1,14 @@
+pre-requests: vtstscripts/{dymselsph.pl, dymmatrix.py} INCAR-outside INCAR-phono POSCAR POTCAR KPOINTS vasp_raman.py no_scheduler.sh
+
+0. create a directory named 'phonon' here
+1. create DISPLACECAR in folder phonon: perl <path to>/vtstscripts/dymselsph.pl POSCAR x diste <e.g, 8 5 0.001, dist should be big enough to include all atoms in the unit cell>
+2. run VASP in phonon with params below in INCAR:
+    ICHAIN = 1      ! Run the dynamical matrix code
+    ! IMAGES  M     ! Number of parallel images, if desired as in step 2 above; otherwise, do not add.
+    NSW = 25        ! (DOF/M)+1   Number of ionic steps
+    IBRION =   3    ! Tell VASP to run dynamics,
+    POTIM  = 0.0    ! with a time step of zero (ie, do nothing)
+    ISYM = 0        ! Make sure that symmetry is off,
+    EDIFFG = -1E-10 ! and that vasp does not quit due to low forces
+3. create freq.dat modes_sqrt_amu.dat force_constants.dat effective_masses.dat by: python <path to>/vtstscripts/dymmatrix.py DISPLACECAR OUTCAR
+4. go back outside and run: bash no_scheduler.sh

@@ -1,0 +1,48 @@
+SYSTEM = Si_bulk
+ISTART = 0 # From-scratch; job : 0-new 1-cont 2-samecut 
+NWRITE = 3 Verbosity
+
+! electronic relaxation
+ENCUT = 300.0 # cut-off energy
+PREC = Accurate # precision : accurate/normal/low 
+ISPIN = 1 # 1 - off, 2 - on (non spin-polarized calculation)
+ICHARG = 2 # > 10 for non-SC calculation
+IALGO = 38 # DAVidson, then RMM-DIIS
+EDIFF = 1.0E-8 # default
+ISMEAR = 0 # gaussian
+SIGMA = 0.05
+
+! PAW's
+LREAL = .FALSE. # default - Automatic choice of how projection is done
+ADDGRID = .TRUE.
+
+! ionic relaxation
+! EDIFFG = -1E-4
+!! ISYM = 0
+! IBRION = 1
+! NSW = 1000
+! ISIF = 3
+
+! phonons
+ICHAIN = 1      ! Run the dynamical matrix code
+! IMAGES  M     ! Number of parallel images, if desired as in step 2 above; otherwise, do not add.
+NSW = 25        ! (DOF/M)+1   Number of ionic steps
+IBRION =   3    ! Tell VASP to run dynamics,
+POTIM  = 0.0    ! with a time step of zero (ie, do nothing)
+ISYM = 0        ! Make sure that symmetry is off,
+EDIFFG = -1E-10 ! and that vasp does not quit due to low forces
+
+!LEPSILON=.TRUE.
+!ISYM=0
+
+! parallelisation
+LPLANE = .FALSE.
+! NSIM=4
+! KPAR=8
+! NCORE = 12 # number of cores
+
+! output
+LWAVE = .FALSE. # WAVECAR file
+LCHARG = .FALSE. # CHCAR file
+LELF = .FALSE.
+LVTOT = .FALSE.
