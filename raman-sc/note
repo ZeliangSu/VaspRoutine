@@ -12,5 +12,6 @@ pre-requests: vtstscripts/{dymselsph.pl, dymmatrix.py} INCAR-outside INCAR-phono
     ISYM = 0        ! Make sure that symmetry is off,
     EDIFFG = -1E-10 ! and that vasp does not quit due to low forces
 3. create freq.dat modes_sqrt_amu.dat force_constants.dat effective_masses.dat by: python <path to>/vtstscripts/dymmatrix.py DISPLACECAR OUTCAR
-4. cp *dat ../ && cp CONTCAR ../POSCAR.phon. Then cd back outside and run: bash no_scheduler.sh
-5. plotting: bash gnuplot.sh
+4. replace '4_24_2_0.001' by '4_<number of modes in freq.dat>_2_0.001'
+5. cp *dat ../ && cp CONTCAR ../POSCAR.phon. Then cd back outside and run: bash no_scheduler.sh
+6. plotting: bash gnuplot.sh
