@@ -1,4 +1,5 @@
 pre-requests: vtstscripts/{dymselsph.pl, dymmatrix.py} INCAR-outside INCAR-phono POSCAR POTCAR KPOINTS vasp_raman.py no_scheduler.sh
+(replace epsilon.append([float(x) for x in outcar_fh.readline().split()]) by epsilon.append([float(x) for x in outcar_fh.readline().replace('-', ' -').split()]), some cannot parse xxxxx-xxxxxxx bug)
 
 0. create a directory named 'phonon' here
 1. create DISPLACECAR in folder phonon: perl <path to>/vtstscripts/dymselsph.pl POSCAR x diste <e.g, 8 5 0.001, dist should be big enough to include all atoms in the unit cell>
@@ -11,4 +12,5 @@ pre-requests: vtstscripts/{dymselsph.pl, dymmatrix.py} INCAR-outside INCAR-phono
     ISYM = 0        ! Make sure that symmetry is off,
     EDIFFG = -1E-10 ! and that vasp does not quit due to low forces
 3. create freq.dat modes_sqrt_amu.dat force_constants.dat effective_masses.dat by: python <path to>/vtstscripts/dymmatrix.py DISPLACECAR OUTCAR
-4. go back outside and run: bash no_scheduler.sh
+4. cp *dat ../ && cp CONTCAR ../POSCAR.phon. Then cd back outside and run: bash no_scheduler.sh
+5. plotting: bash gnuplot.sh
