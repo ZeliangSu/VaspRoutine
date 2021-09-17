@@ -1,9 +1,11 @@
-pre-requests: vtstscripts/{dymselsph.pl, dymmatrix.py} INCAR-outside INCAR-phono POSCAR POTCAR KPOINTS vasp_raman.py no_scheduler.sh
-(replace epsilon.append([float(x) for x in outcar_fh.readline().split()]) by epsilon.append([float(x) for x in outcar_fh.readline().replace('-', ' -').split()]), some cannot parse xxxxx-xxxxxxx bug)
+pre-requests: vtstscripts/{dymselsph.pl, dymmatrix.py} INCAR-outside INCAR-phono POSCAR POTCAR KPOINTS vasp_raman.py(modified) no_scheduler.sh(modified)
 
-0. create a directory named 'phonon' here
-1. create DISPLACECAR in folder phonon: perl <path to>/vtstscripts/dymselsph.pl POSCAR x diste <e.g, 8 5 0.001, dist should be big enough to include all atoms in the unit cell>
-2. run VASP in phonon with params below in INCAR:
+0. create a directory named 'phonon' here. cp INCAR-phonon into phonon folder with name 'INCAR'
+1. create DISPLACECAR in folder phonon: perl <path to>/vtstscripts/dymselsph.pl POSCAR x dist e <x is the number of atoms in unitcell, and dist can be modified and make sure you include all the atoms in the unitcell, if not, increase it. And e is the displacement resolution. e.g, 8 5 0.001, dist should be big enough to include all atoms in the unit cell>
+
+   the output will tell you how many atoms are included and how many modes of vibration you have. You should use this number of vibration below in the NSW parameter
+
+2. change the NSW in INCAR then run VASP in phonon with params below in INCAR:
     ICHAIN = 1      ! Run the dynamical matrix code
     ! IMAGES  M     ! Number of parallel images, if desired as in step 2 above; otherwise, do not add.
     NSW = 25        ! (DOF/M)+1   Number of ionic steps
@@ -11,7 +13,13 @@ pre-requests: vtstscripts/{dymselsph.pl, dymmatrix.py} INCAR-outside INCAR-phono
     POTIM  = 0.0    ! with a time step of zero (ie, do nothing)
     ISYM = 0        ! Make sure that symmetry is off,
     EDIFFG = -1E-10 ! and that vasp does not quit due to low forces
+
+    make sure that you change the NSW = number of modes + 1 e.g.,25 for 24 modes
+
 3. create freq.dat modes_sqrt_amu.dat force_constants.dat effective_masses.dat by: python <path to>/vtstscripts/dymmatrix.py DISPLACECAR OUTCAR
-4. replace '4_24_2_0.001' by '4_<number of modes in freq.dat>_2_0.001'
-5. cp *dat ../ && cp CONTCAR ../POSCAR.phon. Then cd back outside and run: bash no_scheduler.sh
-6. plotting: bash gnuplot.sh
+4. cp *dat ../ && cp CONTCAR ../POSCAR.phon
+modify the "export VASP_RAMAN_PARAMS='<first number after the imaginary part in freq.dat>_<last mode in freq.dat>_2_0.01'
+
+copy INCAR-outside as INCAR
+Then cd back outside and run: bash no_scheduler.sh
+5. plotting: bash gnuplot.sh
